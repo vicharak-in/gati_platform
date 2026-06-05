@@ -1,0 +1,6 @@
+[submodule "gati"]
+	path = hardware/gati
+	url = https://github.com/vicharak-in/gati
+[submodule "hardware/rah-bit"]
+	path = hardware/rah-bit
+	url = https://github.com/vicharak-in/gati-rah-bit.git
