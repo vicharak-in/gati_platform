@@ -1,0 +1,45 @@
+{
+    "args": [
+        "-o",
+        "async_81",
+        "--base_path",
+        "/home/rishik/SHWET/rah/ip",
+        "--vlnv",
+        {
+            "vendor": "efinixinc.com",
+            "library": "memory",
+            "name": "efx_fifo_top",
+            "version": "5.1"
+        }
+    ],
+    "conf": {
+        "SYNC_CLK": "0",
+        "SYNC_STAGE": "2",
+        "DEPTH_2": "9",
+        "DATA_WIDTH": "32",
+        "MODE": "\"STANDARD\"",
+        "OUTPUT_REG": "1",
+        "PROG_FULL_ASSERT": "128",
+        "PROGRAMMABLE_FULL": "\"NONE\"",
+        "PFN_INTERNAL": "127",
+        "PEA_INTERNAL": "2",
+        "PEN_INTERNAL": "3",
+        "PROGRAMMABLE_EMPTY": "\"NONE\"",
+        "OPTIONAL_FLAGS": "1",
+        "PIPELINE_REG": "1",
+        "FAMILY": "\"TRION\"",
+        "ASYM_WIDTH_RATIO": "4",
+        "BYPASS_RESET_SYNC": "0",
+        "ENDIANESS": "0"
+    },
+    "output": {
+        "external_source_source": [
+            "/home/rishik/SHWET/rah/ip/async_81/async_81_tmpl.v",
+            "/home/rishik/SHWET/rah/ip/async_81/async_81.v",
+            "/home/rishik/SHWET/rah/ip/async_81/async_81_define.vh",
+            "/home/rishik/SHWET/rah/ip/async_81/async_81_tmpl.vhd"
+        ]
+    },
+    "sw_version": "2023.2.307",
+    "generated_date": "2024-06-17T05:44:21.740626"
+}
