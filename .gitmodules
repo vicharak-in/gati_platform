@@ -4,3 +4,6 @@
 [submodule "hardware/rah-bit"]
 	path = hardware/rah-bit
 	url = https://github.com/vicharak-in/gati-rah-bit.git
+[submodule "isa"]
+	path = isa
+	url = https://github.com/vicharak-in/gati-isa
