@@ -7,3 +7,6 @@
 [submodule "isa"]
 	path = isa
 	url = https://github.com/vicharak-in/gati-isa
+[submodule "software/gaticc"]
+	path = software/gaticc
+	url = https://github.com/vicharak-in/gaticc.git
