@@ -1,19 +1,43 @@
-# Gati Platform
+# Gati Platform 
 
-The Gati Platform repository contains all components required to build and run applications on the Gati CNN Accelerator.
+Gati is a FPGA based reconfigurable DNN inference platform developed by team by Vicharak.
+Reconfigurable in a way that it let's you generate the hardware only necessary for the target model.
+
+Gati Currently supports a plethora of operators which can be arranged accordingly to support a list of models. 
 
 ## Repository Structure
 
 ```text
 gati_platform
 ├── hardware/
+|   └── gati/
+|   └── rah_bit/
+|   └── src/
 ├── software/
-│   └── gaticc/
+│   └── gaticc/   
 └── README.md
 ```
 
-* `hardware/` - Hardware design and FPGA-related components.
+* `hardware/` - Hardware design and FPGA-related components. 
 * `software/gaticc/` - Compiler, simulator, and runtime for the Gati DNN Accelerator.
+
+## Sub Modules 
+Gati Platform contains these submodules
+
+gati - This repo contains all the hardware files for the gati DNN Accelerator.
+rah_bit - Rah bit is a custom communication protocol designed by Team at vicharak Gati Platform uses this for FPGA CPU communication. 
+
+gaticc -  Gati Compiler Collection is the software side of Gati which contains all the compilers and runtime for Gati.
+
+For more details in any of these please check them out.
+
+
+## Hardware 
+
+Gati Platfrom is currently Supported on the [Vaaman](https://store.vicharak.in/?product=vaaman&post_type=product&name=vaaman&v=13b5bfe96f3e) FPGA SBC Developed By Vicharak.
+
+
+To use this on your Vaamam please Follow the instructions below.
 
 ## Clone Repository
 
