@@ -37,7 +37,7 @@ For more details in any of these please check them out.
 Gati Platfrom is currently Supported on the [Vaaman](https://store.vicharak.in/?product=vaaman&post_type=product&name=vaaman&v=13b5bfe96f3e) FPGA SBC Developed By Vicharak.
 
 
-To use this on your Vaamam please Follow the instructions below.
+To use this on your Vaaman read this [doc](./hardware/gati/docs/NewBoard.md) to setup your vaaman. 
 
 ## Clone Repository
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<efx:project name="gati" description="" last_change="1780898787" sw_version="2025.2.288.2.10" last_run_state="pass" last_run_flow="bitstream" config_result_in_sync="true" design_ood="sync" place_ood="sync" route_ood="sync" xmlns:efx="http://www.efinixinc.com/enf_proj" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efinixinc.com/enf_proj enf_proj.xsd">
+<efx:project name="gati" description="" last_change="1781179906" sw_version="2025.2.288.2.10" last_run_state="pass" last_run_flow="bitstream" config_result_in_sync="true" design_ood="change" place_ood="change" route_ood="sync" xmlns:efx="http://www.efinixinc.com/enf_proj" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efinixinc.com/enf_proj enf_proj.xsd">
     <efx:device_info>
         <efx:family name="Trion"/>
         <efx:device name="T120F324"/>
@@ -13,7 +13,6 @@
         <efx:design_file name="../src/Dispatch_UART.v" version="default" library="default"/>
         <efx:design_file name="../src/cvt_48232.v" version="default" library="default"/>
         <efx:design_file name="../src/SPI_Slave.v" version="default" library="default"/>
-        <efx:design_file name="../rah-bit/rtl/example.v" version="default" library="default"/>
         <efx:design_file name="../rah-bit/rtl/rah_encoder.v" version="default" library="default"/>
         <efx:design_file name="../rah-bit/rtl/video_gen.v" version="default" library="default"/>
         <efx:design_file name="../rah-bit/rtl/rah_version_check.v" version="default" library="default"/>
@@ -126,7 +125,6 @@
         <efx:design_file name="../gati/src/rtl/ip/sdpram/bram_decompose.vh" version="default" library="default"/>
         <efx:design_file name="../gati/src/rtl/ip/sdpram/bram_ini.vh" version="default" library="default"/>
         <efx:design_file name="../gati/src/rtl/ip/sdpram/sdpram.v" version="default" library="default"/>
-        <efx:design_file name="../gati/src/rtl/ip/sdpram/sdpram_define.vh" version="default" library="default"/>
         <efx:design_file name="../gati/src/rtl/ip/sync_fifo/sync_fifo.v" version="default" library="default"/>
         <efx:design_file name="../gati/src/rtl/mega_pool/gen_global_avg_pool.v" version="default" library="default"/>
         <efx:design_file name="../gati/src/rtl/mega_pool/global_avg_pool.v" version="default" library="default"/>
@@ -149,8 +147,6 @@
         <efx:design_file name="../gati/src/rtl/mem_ctrl/Wr_ctrl.v" version="default" library="default"/>
         <efx:design_file name="../gati/src/rtl/mem_ctrl/WR_ID_Manager.v" version="default" library="default"/>
         <efx:design_file name="../gati/src/rtl/mem_ctrl/ip/data_fifo/data_fifo.v" version="default" library="default"/>
-        <efx:design_file name="../gati/src/rtl/mipi_ctrl/counters.v" version="default" library="default"/>
-        <efx:design_file name="../gati/src/rtl/mipi_ctrl/data_mem_ctrl.v" version="default" library="default"/>
         <efx:design_file name="../gati/src/rtl/mipi_ctrl/dram_wr_ctrl.v" version="default" library="default"/>
         <efx:design_file name="../gati/src/rtl/mipi_ctrl/fifo_wr_ctrl.v" version="default" library="default"/>
         <efx:design_file name="../gati/src/rtl/mipi_ctrl/image_fifo_array_async.v" version="default" library="default"/>
