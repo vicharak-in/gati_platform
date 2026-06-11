@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>DRAM Controller &#8212; Gati  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Adder Tree" href="adder_tree.html" />
+    <link rel="prev" title="Configuration Block" href="configuration-block.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="dram-controller">
+<span id="id1"></span><h1>DRAM Controller<a class="headerlink" href="#dram-controller" title="Link to this heading">¶</a></h1>
+<p>This document presents the architecture of Memory Controller with ‘N’ requestors
+and a ‘Round Robin Priority Arbiter’</p>
+<a class="reference internal image-reference" href="_images/dram_ctrl.svg"><img alt="_images/dram_ctrl.svg" class="align-center" src="_images/dram_ctrl.svg" style="width: 100%;" />
+</a>
+<p>It comprises of ‘N’ ports wherein, each requestor is connected to a particular
+port based on the priority. Port 0 has highest priority whereas port ‘N’ has the
+least priority. Each port has controller and a queue associated with it, if it
+recieves a valid read/write request then it is forwarded to the queue and these
+requests are further forwarded to “Round Robin Arbiter”. Each request in the
+queue stores various fields such as, port-ID, Address, read/write, and
+burst-length. Native to AXI interface converts these requests to AXI signals to
+be applied to DDR.</p>
+<p><strong>Scheduling Mechanism:</strong></p>
+<p>At the start of every memory scheduling cycle, the queues are scanned and a
+request is processed in the order of the highest priority port first then the
+lower priority port. The requests that are issued at the ports are dispatched
+into queue, and if any queue has a valid request then the arbiter selects that
+request and issues a grant. If there are multiple requests from different queues
+then grant is issued in round robin fashion. If all the requests are processed
+or if queues are empty then priority of port 0 is reset to highest in next
+memory cycle.</p>
+<p>The request that recieves a grant is further processed by “Request Manager”
+which forwards the address, burst-length and other signals to “Native to AXI
+interface” module to sent to DDR. Upon recieving the reponse from AXI interface,
+another request can be scheduled for the processing.  To monitor the request
+that is being acknowledged and/or processed, there exists an “ID Manager” that
+issues select/ready/ack signals to the requestors for the data transfer.</p>
+<p>If requestor issues a ‘read’ request then after recieving valid data from DDR,
+select signal is issued and then data is transferred to the blocks on 256-bit
+<cite>WRITE</cite> channel of the memory controller, whereas for a ‘write’ request, when it
+recieves a WREADY reponse from AXI then it issues an ‘ack’ signal to accept the
+data from the blocks to sent to DDR.</p>
+<p><strong>Round Robin Arbiter:</strong></p>
+<p>A Round Robin Arbiter with Priority is an arbitration scheme that allocates a
+shared resource among multiple requestors. Requestors are categorized into
+different priority levels based on predetermined criteria. In each memory cycle,
+the arbiter follows a round-robin sequence to grant access to requestors.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For more details related to AXI interface and the signals, refer to
+AXI specification user guide.
+<a class="reference external" href="https://developer.arm.com/documentation/ihi0022/e/">https://developer.arm.com/documentation/ihi0022/e/</a></p>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Gati</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">DNN Networks</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="gati.html">Gati - The Architecture</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="input_blocks.html">Input Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sa.html">Systolic Array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quantization.html">A Deeper Look Into Quantization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dram.html">DDR Layout and Access Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration-block.html">Configuration Block</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">DRAM Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adder_tree.html">Adder Tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mega_pool.html">Mega Pool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reshape_transpose.html">Reshape–Transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reshape_transpose.html#block-diagram">Block Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Resize.html">Resize Operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eltwise_op.html">Element-Wise Processing Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eltwise_op.html#element-wise-operation-element-wise-op">Element-Wise Operation (element_wise_op)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DWP.html">DRAM write protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dispatcher.html">Dispatch Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nms.html">NMS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concat.html">CONCAT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concat.html#limitations-and-assumptions">Limitations and Assumptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#onnx">ONNX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#cpu-fpga">CPU &lt;-&gt; FPGA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#input-blocks">Input Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#systolic-array">Systolic Array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#output-block">Output Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#tail-blocks">Tail Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#element-wise-operations">Element Wise Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#resize-operator">Resize Operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#pooling-network">Pooling Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#transpose">Transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#dram">DRAM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#configuration-block-bus-master-controller">Configuration Block/Bus master controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#flattening">Flattening</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#fc-engine">FC Engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#dram-write-protocol">DRAM write protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#dispatch-block">Dispatch Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#nms">NMS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#concat">CONCAT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignment.html">Alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="gati.html">Gati</a><ul>
+      <li>Previous: <a href="configuration-block.html" title="previous chapter">Configuration Block</a></li>
+      <li>Next: <a href="adder_tree.html" title="next chapter">Adder Tree</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Vicharak Computers PVT LTD.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/DRAM-controller.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

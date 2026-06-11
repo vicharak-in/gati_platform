@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Dispatch Block &#8212; Gati  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="NMS" href="nms.html" />
+    <link rel="prev" title="DRAM write protocol" href="DWP.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="dispatch-block">
+<span id="dispatcher"></span><h1>Dispatch Block<a class="headerlink" href="#dispatch-block" title="Link to this heading">¶</a></h1>
+<p>The FPGA to CPU Dispatcher Block facilitates data transfer between the FPGA to
+CPU results stored in FPGA’s DDR memory. After processing all layers of the
+model, this block ensures the seamless dispatch of 256-bit wide data from DDR to
+the CPU in 32-bit chunks. It includes mechanisms for request generation, data
+conversion, and signaling to indicate operation completion.</p>
+<a class="reference internal image-reference" href="_images/dispatch.png"><img alt="_images/dispatch.png" class="align-center" src="_images/dispatch.png" style="width: 110%;" />
+</a>
+<p>When a dispatch_cpu signal is received from the instruction bus, the dispatcher
+waits for the layer_done signal from the config block, which indicates that all
+layers have been processed and results are ready for dispatch. Upon receiving
+the layer_done signal, the dispatcher generates a request to DDR, specifying
+the start address, burst length, and a read signal. DDR then begins sending
+256-bit wide data from the specified address. The dispatche converts this data
+into 32-bit chunks and stores them in a FIFO for retrieval by the CPU. Once the
+config_done signal is received from the config block, indicating the final
+request,this sends a Start of Frame (SOF), data size, and ID to mark the end of
+the operation.</p>
+<p><strong>Dispatch_Flag_Checker</strong> is the block that receives the start address and data
+size to be sent to the CPU. It waits for the dispatch_cpu and layer_done
+signals, latches the data, concatenates it, and sends it to the FIFO for
+storage. The Request_Generator then generates requests to DDR. It waits for
+readiness signals from the packetizer and memory_request_controller blocks
+before taking data from the FIFO and forwarding it along with a valid request
+signal.</p>
+<p><strong>Memory_Request_Controller</strong> handles communication with DDR. Upon receiving a
+valid request, it latches the address and data size, sends the 32-bit address
+to DDR in 8-bit chunks. It waits for the data_last signal from the data_rd_ctrl
+before sending the next request.The packetizer slices incoming 256-bit data
+from DDR into 32-bit chunks. It latches the data size and ID upon receiving a
+valid request and sends processed data to the FIFO.</p>
+<p><strong>Packetizer</strong> monitors the config_done signal and sends a SOF to indicate the
+end of the operation alongside data size and ID based on valid signal and
+dispatch data through RAH or UART.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Gati</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networks.html">DNN Networks</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="gati.html">Gati - The Architecture</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="input_blocks.html">Input Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sa.html">Systolic Array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quantization.html">A Deeper Look Into Quantization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dram.html">DDR Layout and Access Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration-block.html">Configuration Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DRAM-controller.html">DRAM Controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adder_tree.html">Adder Tree</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mega_pool.html">Mega Pool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reshape_transpose.html">Reshape–Transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reshape_transpose.html#block-diagram">Block Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Resize.html">Resize Operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eltwise_op.html">Element-Wise Processing Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eltwise_op.html#element-wise-operation-element-wise-op">Element-Wise Operation (element_wise_op)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DWP.html">DRAM write protocol</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Dispatch Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nms.html">NMS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concat.html">CONCAT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concat.html#limitations-and-assumptions">Limitations and Assumptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#onnx">ONNX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#cpu-fpga">CPU &lt;-&gt; FPGA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#input-blocks">Input Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#systolic-array">Systolic Array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#output-block">Output Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#tail-blocks">Tail Blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#element-wise-operations">Element Wise Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#resize-operator">Resize Operator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#pooling-network">Pooling Network</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#transpose">Transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#dram">DRAM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#configuration-block-bus-master-controller">Configuration Block/Bus master controller</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#flattening">Flattening</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#fc-engine">FC Engine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#dram-write-protocol">DRAM write protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#dispatch-block">Dispatch Block</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#nms">NMS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gati.html#concat">CONCAT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="alignment.html">Alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="gati.html">Gati</a><ul>
+      <li>Previous: <a href="DWP.html" title="previous chapter">DRAM write protocol</a></li>
+      <li>Next: <a href="nms.html" title="next chapter">NMS</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Vicharak Computers PVT LTD.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/dispatcher.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
