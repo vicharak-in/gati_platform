@@ -122,3 +122,8 @@ Development of individual components happens in their respective repositories:
 Please refer to the contribution guidelines of those repositories before opening issues or submitting pull requests.
 
 Unless the issue is specifically related to platform integration, issues and pull requests should not be opened in this repository.
+
+
+## LICENSE 
+
+The Gati Platform and all its submodule are under this [LICENSE](./LICENSE.md)
