@@ -48,7 +48,9 @@ jobs:
 
           # Copy entire gati source folder as-is
           cp -r hardware/gati/docs/source/. staging/gati/
-
+          
+          cp -r hardware/gati/docs/source/_static staging/_static
+  
           # gaticc markdown docs
           cp software/gaticc/docs/*.md staging/gaticc/
 

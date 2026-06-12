@@ -1,6 +1,6 @@
 # Gati Platform 
 
-GATI IS NOW OPEN !! 🎉 🥳
+## GATI IS NOW OPEN !! 🎉 🥳
 
 Gati is a FPGA based reconfigurable CNN inference platform developed by team by Vicharak.
 Reconfigurable in a way that it let's you generate the hardware only necessary for the target model.
