@@ -54,10 +54,9 @@
 </li>
 </ol>
 </section>
-</section>
 <hr class="docutils" />
 <section id="directory-structure">
-<h1>Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading">¶</a></h1>
+<h2>Directory Structure<a class="headerlink" href="#directory-structure" title="Link to this heading">¶</a></h2>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>hardware/
 ├── gati/
 ├── rah-bit/
@@ -66,6 +65,7 @@
 └── ...
 </pre></div>
 </div>
+</section>
 <section id="platform-projects">
 <h2>Platform Projects<a class="headerlink" href="#platform-projects" title="Link to this heading">¶</a></h2>
 <p>Each platform directory contains a complete FPGA project targeting a specific board and FPGA device.</p>
@@ -79,15 +79,14 @@
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">vaaman</span></code> platform targets the Efinix Trion T120 FPGA and uses the Efinix Efinity toolchain.</p>
 </section>
-</section>
 <hr class="docutils" />
 <section id="hardware-configuration-generation">
-<h1>Hardware Configuration Generation<a class="headerlink" href="#hardware-configuration-generation" title="Link to this heading">¶</a></h1>
+<h2>Hardware Configuration Generation<a class="headerlink" href="#hardware-configuration-generation" title="Link to this heading">¶</a></h2>
 <p>Before generating a bitstream, a model-specific hardware configuration must be created.</p>
 <p>The hardware configuration is generated from an ONNX model using the Gati compiler.</p>
-<p>The script is available <a class="reference download internal" download="" href="_downloads/7ca26ed9cdd530be61af084678504249/gen_hardware.sh"><span class="xref download myst">here</span></a></p>
+<p>The script is available <a class="reference external" href="https://github.com/vicharak-in/gaticc/blob/master/scripts/gen_hardware.sh">here</a></p>
 <section id="command">
-<h2>Command<a class="headerlink" href="#command" title="Link to this heading">¶</a></h2>
+<h3>Command<a class="headerlink" href="#command" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./gen_hardware.sh<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-p<span class="w"> </span>&lt;gati_platform&gt;<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-m<span class="w"> </span>&lt;model.onnx&gt;<span class="w"> </span><span class="se">\</span>
@@ -96,7 +95,7 @@
 </div>
 </section>
 <section id="arguments">
-<h2>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">¶</a></h2>
+<h3>Arguments<a class="headerlink" href="#arguments" title="Link to this heading">¶</a></h3>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Argument</p></th>
@@ -120,7 +119,7 @@
 </table>
 </section>
 <section id="example">
-<h2>Example<a class="headerlink" href="#example" title="Link to this heading">¶</a></h2>
+<h3>Example<a class="headerlink" href="#example" title="Link to this heading">¶</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./gen_hardware.sh<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-p<span class="w"> </span>~/gati_platform<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-m<span class="w"> </span>yolov8n_quantized.onnx<span class="w"> </span><span class="se">\</span>
@@ -129,7 +128,7 @@
 </div>
 </section>
 <section id="what-happens">
-<h2>What Happens<a class="headerlink" href="#what-happens" title="Link to this heading">¶</a></h2>
+<h3>What Happens<a class="headerlink" href="#what-happens" title="Link to this heading">¶</a></h3>
 <p>The script invokes:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gaticc<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-g<span class="w"> </span>&lt;model.onnx&gt;<span class="w"> </span><span class="se">\</span>
@@ -142,18 +141,18 @@
 </pre></div>
 </div>
 <p>This file contains accelerator parameters derived from the network architecture and FPGA target.</p>
+</section>
 <section id="supported-model">
 <h3>Supported Model<a class="headerlink" href="#supported-model" title="Link to this heading">¶</a></h3>
 <p>All the supported model are available in the Model Zoo in the release section.</p>
 </section>
 </section>
-</section>
 <hr class="docutils" />
 <section id="fpga-bitstream-generation">
-<h1>FPGA Bitstream Generation<a class="headerlink" href="#fpga-bitstream-generation" title="Link to this heading">¶</a></h1>
+<h2>FPGA Bitstream Generation<a class="headerlink" href="#fpga-bitstream-generation" title="Link to this heading">¶</a></h2>
 <p>After the hardware configuration has been generated, the FPGA project can be synthesized using the Efinix Efinity toolchain.</p>
 <section id="opening-the-project">
-<h2>Opening the Project<a class="headerlink" href="#opening-the-project" title="Link to this heading">¶</a></h2>
+<h3>Opening the Project<a class="headerlink" href="#opening-the-project" title="Link to this heading">¶</a></h3>
 <p>Navigate to the Vaaman platform directory:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>hardware/vaaman
 </pre></div>
@@ -165,7 +164,7 @@
 <p>This project is pre-configured for the Vaaman platform and targets the Efinix Trion T120 FPGA.</p>
 </section>
 <section id="important-do-not-update-ips">
-<h2>Important: Do Not Update IPs<a class="headerlink" href="#important-do-not-update-ips" title="Link to this heading">¶</a></h2>
+<h3>Important: Do Not Update IPs<a class="headerlink" href="#important-do-not-update-ips" title="Link to this heading">¶</a></h3>
 <blockquote>
 <div><p>[!WARNING]
 When opening the project, Efinity may display a dialog prompting you to update or regenerate IP blocks.</p>
@@ -181,7 +180,7 @@ When opening the project, Efinity may display a dialog prompting you to update o
 </div></blockquote>
 </section>
 <section id="building-the-bitstream">
-<h2>Building the Bitstream<a class="headerlink" href="#building-the-bitstream" title="Link to this heading">¶</a></h2>
+<h3>Building the Bitstream<a class="headerlink" href="#building-the-bitstream" title="Link to this heading">¶</a></h3>
 <p>Once the project is opened:</p>
 <ol class="arabic simple">
 <li><p>Run Synthesis</p></li>
@@ -192,7 +191,7 @@ When opening the project, Efinity may display a dialog prompting you to update o
 <p>The generated hardware configuration (<code class="docutils literal notranslate"><span class="pre">gen_hardware.vh</span></code>) will automatically be included during compilation.</p>
 </section>
 <section id="output-files">
-<h2>Output Files<a class="headerlink" href="#output-files" title="Link to this heading">¶</a></h2>
+<h3>Output Files<a class="headerlink" href="#output-files" title="Link to this heading">¶</a></h3>
 <p>Generated FPGA output files can be found in:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>hardware/vaaman/outflow/
 </pre></div>
@@ -202,9 +201,9 @@ When opening the project, Efinity may display a dialog prompting you to update o
 </section>
 <hr class="docutils" />
 <section id="generated-outputs">
-<h1>Generated Outputs<a class="headerlink" href="#generated-outputs" title="Link to this heading">¶</a></h1>
+<h2>Generated Outputs<a class="headerlink" href="#generated-outputs" title="Link to this heading">¶</a></h2>
 <section id="hardware-configuration">
-<h2>Hardware Configuration<a class="headerlink" href="#hardware-configuration" title="Link to this heading">¶</a></h2>
+<h3>Hardware Configuration<a class="headerlink" href="#hardware-configuration" title="Link to this heading">¶</a></h3>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>hardware/Gati/src/rtl/common/gen_hardware.vh
 </pre></div>
 </div>
@@ -217,7 +216,7 @@ When opening the project, Efinity may display a dialog prompting you to update o
 </ul>
 </section>
 <section id="fpga-bitstream">
-<h2>FPGA Bitstream<a class="headerlink" href="#fpga-bitstream" title="Link to this heading">¶</a></h2>
+<h3>FPGA Bitstream<a class="headerlink" href="#fpga-bitstream" title="Link to this heading">¶</a></h3>
 <p>Generated by the Efinity toolchain.</p>
 <p>Typical outputs include:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>outflow/
@@ -231,16 +230,16 @@ When opening the project, Efinity may display a dialog prompting you to update o
 </section>
 <hr class="docutils" />
 <section id="tool-requirements">
-<h1>Tool Requirements<a class="headerlink" href="#tool-requirements" title="Link to this heading">¶</a></h1>
+<h2>Tool Requirements<a class="headerlink" href="#tool-requirements" title="Link to this heading">¶</a></h2>
 <section id="gati-compiler">
-<h2>Gati Compiler<a class="headerlink" href="#gati-compiler" title="Link to this heading">¶</a></h2>
+<h3>Gati Compiler<a class="headerlink" href="#gati-compiler" title="Link to this heading">¶</a></h3>
 <p>The following tool must be available in your PATH:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>which<span class="w"> </span>gaticc
 </pre></div>
 </div>
 </section>
 <section id="fpga-toolchain">
-<h2>FPGA Toolchain<a class="headerlink" href="#fpga-toolchain" title="Link to this heading">¶</a></h2>
+<h3>FPGA Toolchain<a class="headerlink" href="#fpga-toolchain" title="Link to this heading">¶</a></h3>
 <p>For the Vaaman platform:</p>
 <ul class="simple">
 <li><p>Efinity Toolchain</p></li>
@@ -250,7 +249,7 @@ When opening the project, Efinity may display a dialog prompting you to update o
 </section>
 <hr class="docutils" />
 <section id="supported-platforms">
-<h1>Supported Platforms<a class="headerlink" href="#supported-platforms" title="Link to this heading">¶</a></h1>
+<h2>Supported Platforms<a class="headerlink" href="#supported-platforms" title="Link to this heading">¶</a></h2>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Platform</p></th>
@@ -269,7 +268,7 @@ When opening the project, Efinity may display a dialog prompting you to update o
 </section>
 <hr class="docutils" />
 <section id="complete-build-flow">
-<h1>Complete Build Flow<a class="headerlink" href="#complete-build-flow" title="Link to this heading">¶</a></h1>
+<h2>Complete Build Flow<a class="headerlink" href="#complete-build-flow" title="Link to this heading">¶</a></h2>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>ONNX Model
      │
      ▼
@@ -297,6 +296,7 @@ Bitstream Generation
 Program FPGA
 </pre></div>
 </div>
+</section>
 </section>
 
 
@@ -330,14 +330,7 @@ Program FPGA
 <li class="toctree-l1"><a class="reference internal" href="gaticc/intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gaticc/install.html">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gaticc/usage.html">Usage</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Gati Hardware Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#directory-structure">Directory Structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#hardware-configuration-generation">Hardware Configuration Generation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#fpga-bitstream-generation">FPGA Bitstream Generation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#generated-outputs">Generated Outputs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#tool-requirements">Tool Requirements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#supported-platforms">Supported Platforms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#complete-build-flow">Complete Build Flow</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Hardware Generation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gati/gati.html">Gati - The Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gati/references.html">References</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gaticc/faq.html">FAQ</a></li>
