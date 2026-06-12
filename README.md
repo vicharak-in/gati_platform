@@ -23,16 +23,6 @@ gati_platform
 * `hardware/` - Hardware design and FPGA-related components. 
 * `software/gaticc/` - Compiler, simulator, and runtime for the Gati DNN Accelerator.
 
-## Sub Modules 
-Gati Platform contains these submodules
-
-gati - This repo contains all the hardware files for the gati DNN Accelerator.
-rah_bit - Rah bit is a custom communication protocol designed by Team at vicharak Gati Platform uses this for FPGA CPU communication. 
-
-gaticc -  Gati Compiler Collection is the software side of Gati which contains all the compilers and runtime for Gati.
-
-For more details in any of these please check them out.
-
 
 ## Hardware 
 
@@ -40,7 +30,11 @@ Gati Platfrom is currently Supported on the [Vaaman](https://store.vicharak.in/?
 
 To generate a bitstream for your target model, follow instructions in [hardware/README.md](./hardware/README.md).
 
-To use this on your Vaaman read this [doc](./hardware/gati/docs/NewBoard.md) to setup your vaaman. 
+To use this on your Vaaman read this [doc](https://github.com/vicharak-in/Gati/blob/main/docs/NewBoard.md) to setup your vaaman. 
+
+## Supported Models
+
+The list of pre quantized model is available in the release section of the repo . However it is not limited to these models.
 
 ## Clone Repository
 
