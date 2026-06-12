@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Physical/Address specification for Almaif device &#8212; Gati Platform  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="physical-address-specification-for-almaif-device">
+<h1>Physical/Address specification for Almaif device<a class="headerlink" href="#physical-address-specification-for-almaif-device" title="Link to this heading">¶</a></h1>
+<section id="rationale">
+<h2>Rationale<a class="headerlink" href="#rationale" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="#almaif.rst"><span class="xref myst">Almaif</span></a> is a Hardware Interface Specification that abstracts an
+FPGA accelerator as a linear memory device segmented into 3 distinct regions:
+Control, Command Queue, Data. Details of these regions are mentioned in that
+document.</p>
+<p>As the FPGA on our board does not have direct access to memory, there is nothing
+to be segmented. This specification aims to achieve this deception of the FPGA
+being a storage device to the CPU. This spec in brief defines an addressing
+protocol and how the aforementioned segmentation is achieved via the FPGA.</p>
+</section>
+<section id="specification">
+<h2>Specification<a class="headerlink" href="#specification" title="Link to this heading">¶</a></h2>
+<section id="packet-format">
+<h3>Packet Format<a class="headerlink" href="#packet-format" title="Link to this heading">¶</a></h3>
+<p>This packet shall be referred to as a <strong>“STORE”</strong> packet.</p>
+<p><img alt="STORE packet" src="gati/store.png" /></p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Bit fields</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>W</p></td>
+<td><p>1 if the packet is a Write</p></td>
+</tr>
+<tr class="row-odd"><td><p>Reserved</p></td>
+<td><p>Reserved for future extensions</p></td>
+</tr>
+<tr class="row-even"><td><p>Address</p></td>
+<td><p>A number that falls in the range of 0-N where N is the size of memory we’ve advertised the FPGA to have</p></td>
+</tr>
+<tr class="row-odd"><td><p>Data</p></td>
+<td><p>How this field is interpreted is upto the region (among the three) that the Address field falls in.</p></td>
+</tr>
+<tr class="row-even"><td><p></p></td>
+<td><p>See below for more information</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="architecture">
+<h3>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">¶</a></h3>
+<p>When a STORE packet is received, there are three ways in which it can be
+interpreted. This is decided by the 32bit address field. The address can fall
+into three regions of memory: Control, Command Queue, and Data. Each of these
+cases are handled separately.</p>
+<p><img alt="Block Diagram" src="gati/block.png" /></p>
+<p>The <strong>Address Translator</strong> is like an arbiter. If the address lies in:</p>
+<ol class="arabic simple">
+<li><p><em>Control Region</em>: One of the 13 registers in the register file need to be
+written to a register mapped to the address in address field. The data to
+be written will be the next 64bits.</p></li>
+<li><p><em>Command Queue</em>: Upcoming 8 packets (each 64 bit) should be sent to a FIFO.
+On the other end of the FIFO is a packet processor that dispatches the
+kernels. The 512bits (64*8) are defined by the Kernel Dispatch Packet format
+defined <a class="reference internal" href="#./almaif.rst"><span class="xref myst">here</span></a>.</p></li>
+<li><p><em>Data</em>: The Data field in the STORE packet specifies how many 64bits packets
+that come after should be stored at address starting from ‘Address’. This is
+the only region that is actually memory that can store data. Furthermore, this
+is the only region that uses the ‘data’ field of the STORE packet.</p></li>
+</ol>
+<section id="reading-writing">
+<h4>Reading/Writing<a class="headerlink" href="#reading-writing" title="Link to this heading">¶</a></h4>
+<p>Above section define for most part how Writing works. Reading is similar. To
+read data from any part of the memory, STORE packet should mark the ‘Write’
+bit as Zero and the ‘Data’ field should specify how many 64bit packets need
+to be read starting from ‘Address’</p>
+</section>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Gati Platform</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gaticc/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gaticc/install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gaticc/usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html">Gati Hardware Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#hardware-configuration-generation">Hardware Configuration Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#fpga-bitstream-generation">FPGA Bitstream Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#generated-outputs">Generated Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#tool-requirements">Tool Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#supported-platforms">Supported Platforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#complete-build-flow">Complete Build Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gati.html">Gati - The Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gaticc/faq.html">FAQ</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Vicharak Computers PVT LTD.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/gati/store.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

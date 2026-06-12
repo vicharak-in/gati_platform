@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Welcome to Gati’s documentation! &#8212; Gati  documentation</title>
+    <title>Welcome to Gati Platform Documentation &#8212; Gati Platform  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
@@ -15,7 +15,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Overview" href="overview.html" />
+    <link rel="next" title="Overview" href="gati/overview.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,54 +33,42 @@
 
           <div class="body" role="main">
             
-  <section id="welcome-to-gati-s-documentation">
-<h1>Welcome to Gati’s documentation!<a class="headerlink" href="#welcome-to-gati-s-documentation" title="Link to this heading">¶</a></h1>
-<p>Gati brings algorithm acceleration to Vaaman. This site
-serves as an internal document of the underlying architecture.</p>
+  <section id="welcome-to-gati-platform-documentation">
+<h1>Welcome to Gati Platform Documentation<a class="headerlink" href="#welcome-to-gati-platform-documentation" title="Link to this heading">¶</a></h1>
+<p>Gati is a complete FPGA-based deep learning inference ecosystem designed to accelerate Convolutional Neural Networks (CNNs) on the Vaaman platform. It combines a high-performance hardware accelerator (<strong>GATI</strong>) with a software toolchain (<strong>GATICC</strong>) that enables users to compile, deploy, simulate, and execute machine-learning models.</p>
+<p>The project is designed around a simple workflow:</p>
+<ol class="arabic simple">
+<li><p>Train or obtain a machine-learning model in ONNX format.</p></li>
+<li><p>Use GATICC to compile and optimize the model.</p></li>
+<li><p>Generate a hardware configuration for the target model.</p></li>
+<li><p>Program the FPGA with the appropriate GATI bitstream.</p></li>
+<li><p>Run accelerated inference on the Vaaman SBC.</p></li>
+</ol>
+<p>By combining FPGA acceleration with a flexible software stack, Gati provides a platform for deploying low-latency and power-efficient neural network inference workloads. The system supports multiple hardware architectures and a growing set of neural network operators, allowing users to execute a wide range of CNN-based models on FPGA hardware.</p>
+<p>The ecosystem consists of two major components:</p>
+<p><strong>GATI</strong>
+The FPGA hardware accelerator responsible for executing neural network operations. GATI implements the compute engines, memory architecture, and data movement required to perform accelerated CNN inference on the FPGA.</p>
+<p><strong>GATICC</strong>
+The accompanying software toolchain that compiles ONNX models, manages deployment, provides simulation capabilities, and exposes a Python API for interacting with the accelerator.</p>
+<p>Together, GATI and GATICC provide an end-to-end workflow that takes a machine-learning model from development to FPGA deployment with minimal user effort.</p>
+<p>Whether you are evaluating existing neural networks, developing custom CNN architectures, or exploring FPGA-based machine learning acceleration, the Gati ecosystem provides the tools necessary to move from ONNX models to accelerated hardware execution.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#vaaman-and-the-edge">Vaaman and the edge</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#where-gati-fits">Where Gati Fits</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="introduction.html#pre-requisites">Pre-requisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="introduction.html#common-definitions">Common Definitions</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="networks.html">DNN Networks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="networks.html#image-classification">Image Classification</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="gati.html">Gati - The Architecture</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#onnx">ONNX</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#cpu-fpga">CPU &lt;-&gt; FPGA</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#input-blocks">Input Blocks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#systolic-array">Systolic Array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#output-block">Output Block</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#tail-blocks">Tail Blocks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#element-wise-operations">Element Wise Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#resize-operator">Resize Operator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#pooling-network">Pooling Network</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#transpose">Transpose</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#dram">DRAM</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#configuration-block-bus-master-controller">Configuration Block/Bus master controller</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#flattening">Flattening</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#fc-engine">FC Engine</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#dram-write-protocol">DRAM write protocol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#dispatch-block">Dispatch Block</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#nms">NMS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gati.html#concat">CONCAT</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="alignment.html">Alignment</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="alignment.html#first-dimension-engine-based-alignment">First Dimension (Engine Based Alignment)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="alignment.html#second-dimension-dram-based-alignment">Second Dimension (DRAM Based Alignment)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="alignment.html#third-dimension-engine-based-alignment">Third Dimension (Engine Based Alignment)</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gati/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaticc/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaticc/install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaticc/usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html">Gati Hardware Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#hardware-configuration-generation">Hardware Configuration Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#fpga-bitstream-generation">FPGA Bitstream Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#generated-outputs">Generated Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#tool-requirements">Tool Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#supported-platforms">Supported Platforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#complete-build-flow">Complete Build Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gati/gati.html">Gati - The Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gati/references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaticc/faq.html">FAQ</a></li>
 </ul>
 </div>
 </section>
@@ -92,7 +80,7 @@ serves as an internal document of the underlying architecture.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">Gati</a></h1>
+<h1 class="logo"><a href="#">Gati Platform</a></h1>
 
 
 
@@ -112,19 +100,28 @@ serves as an internal document of the underlying architecture.</p>
 </search>
 <script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="networks.html">DNN Networks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gati.html">Gati - The Architecture</a></li>
-<li class="toctree-l1"><a class="reference internal" href="alignment.html">Alignment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gati/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaticc/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaticc/install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaticc/usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html">Gati Hardware Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#hardware-configuration-generation">Hardware Configuration Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#fpga-bitstream-generation">FPGA Bitstream Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#generated-outputs">Generated Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#tool-requirements">Tool Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#supported-platforms">Supported Platforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware_overview.html#complete-build-flow">Complete Build Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gati/gati.html">Gati - The Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gati/references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gaticc/faq.html">FAQ</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="overview.html" title="next chapter">Overview</a></li>
+      <li>Next: <a href="gati/overview.html" title="next chapter">Overview</a></li>
   </ul></li>
 </ul>
 </div>

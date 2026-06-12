@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Usage Guide &#8212; Gati Platform  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Gati Hardware Guide" href="../hardware_overview.html" />
+    <link rel="prev" title="Gaticc - A Compiler/Simulator/Runtime for Gati CNN accelerator" href="install.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="usage-guide">
+<h1>Usage Guide<a class="headerlink" href="#usage-guide" title="Link to this heading">¶</a></h1>
+<p>This section explains how to use <strong>GATICC</strong> for compiling ONNX models,
+running inference on the FPGA, and performing CPU-based simulation.</p>
+<p>GATICC works in three simple stages:</p>
+<ol class="arabic simple">
+<li><p><strong>Preprocess your input</strong> → produce a NumPy tensor</p></li>
+<li><p><strong>Run inference</strong> (simulation or FPGA)</p></li>
+<li><p><strong>Postprocess the output</strong> → get predictions, boxes, labels, etc.</p></li>
+</ol>
+<p>GATICC does <em>not</em> perform preprocessing or postprocessing automatically.<br />
+Users must implement these parts depending on their model (classification or detection).</p>
+<section id="basic-workflow">
+<h2>Basic Workflow<a class="headerlink" href="#basic-workflow" title="Link to this heading">¶</a></h2>
+<p>A typical workflow looks like:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ONNX Model  →  Preprocess Input (User code)
+             →  GATICC Compile (int8 only for FPGA)
+             →  Flash Bitstream
+             →  GATICC Load &amp; Run
+             →  Postprocess Output (User code)
+</pre></div>
+</div>
+</section>
+<section id="preprocessing-user-responsibility">
+<h2>Preprocessing (User Responsibility)<a class="headerlink" href="#preprocessing-user-responsibility" title="Link to this heading">¶</a></h2>
+<p>GATICC expects input as a:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>{input_name: numpy_tensor}
+</pre></div>
+</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">input_name</span></code> comes from the ONNX model (use <code class="docutils literal notranslate"><span class="pre">gati.get_model_inputs()</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">numpy_tensor</span></code> must match the model’s expected shape and dtype</p></li>
+<li><p><strong>GATICC expects input in <em>5D tensor format</em>: <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">1,</span> <span class="pre">C,</span> <span class="pre">H,</span> <span class="pre">W)</span></code></strong><br />
+This extra dimension is required by the internal architecture of GATI’s dataflow.</p></li>
+</ul>
+<p><strong>Example: Classification Preprocess</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import numpy as np
+import cv2
+
+def preprocess(img_path):
+    img = cv2.imread(img_path)
+    img = cv2.resize(img, (224, 224))
+    img = img.astype(np.float32) / 255.0
+    img = np.transpose(img, (2, 0, 1))       # CHW
+    img = np.expand_dims(img, axis=0)        # NCHW
+    return img
+</pre></div>
+</div>
+<p><strong>Example: Object Detection Preprocess</strong></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>def preprocess(img):
+    img = cv2.resize(img, (300, 300))
+    img = img[..., ::-1] / 255.0
+    img = (img - 0.5) / 0.5
+    img = np.transpose(img, (2, 0, 1))
+    img = img.reshape(1, 1, 3, 300, 300)
+    return img.astype(np.float32)
+</pre></div>
+</div>
+<p>GATICC does <strong>not</strong> impose a fixed preprocessing style —only the final tensor
+shape must follow <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">1,</span> <span class="pre">C,</span> <span class="pre">H,</span> <span class="pre">W)</span></code>.<br />
+Users may normalize, resize, or format inputs however their ONNX model requires.</p>
+</section>
+<section id="compiling-int8-onnx-model-for-fpga">
+<h2>Compiling INT8 ONNX Model for FPGA<a class="headerlink" href="#compiling-int8-onnx-model-for-fpga" title="Link to this heading">¶</a></h2>
+<p>FPGA inference requires <strong>INT8 quantized ONNX models</strong>.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import gati
+
+gati.set_arch(ramsize=512, sa_arch=&quot;9,4,4&quot;, vasize=32, accbuf_size=4096, fcbuf_size=32768)
+gati.compile(&quot;model_int8.onnx&quot;, &quot;model.gml&quot;,&quot;plus more args if needed&quot;)
+</pre></div>
+</div>
+<p>The compiler produces a <code class="docutils literal notranslate"><span class="pre">.gml</span></code> file used by the FPGA runtime.</p>
+</section>
+<section id="flash-bitstream-fpga-only">
+<h2>Flash Bitstream (FPGA Only)<a class="headerlink" href="#flash-bitstream-fpga-only" title="Link to this heading">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>gati.flash(&quot;gati_944.hex&quot;)
+</pre></div>
+</div>
+</section>
+<section id="load-model-and-run-inference">
+<h2>Load Model and Run Inference<a class="headerlink" href="#load-model-and-run-inference" title="Link to this heading">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>name = gati.get_model_inputs(&quot;model_int8.onnx&quot;)[0]
+gati.load(&quot;model_int8.onnx&quot;, &quot;model.gml&quot;)
+
+inp = preprocess(&quot;image.jpg&quot;)
+out = gati.run({name: inp})
+</pre></div>
+</div>
+<p>The output is always a list of tuples:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[(&quot;layer_name&quot;, numpy_array), (&quot;layer_name&quot;, numpy_array), ...]
+</pre></div>
+</div>
+<p>Users must apply postprocessing to convert raw tensors into:</p>
+<ul class="simple">
+<li><p>class IDs (classification)</p></li>
+<li><p>bounding boxes (object detection)</p></li>
+<li><p>scores / probabilities</p></li>
+<li><p>segmentation masks</p></li>
+<li><p>etc.</p></li>
+</ul>
+</section>
+<section id="simulation-mode-fp32-int8">
+<h2>Simulation Mode (FP32/INT8)<a class="headerlink" href="#simulation-mode-fp32-int8" title="Link to this heading">¶</a></h2>
+<p>Simulation runs on <strong>CPU only</strong>, no FPGA required.</p>
+<p>Simulation supports:</p>
+<ul>
+<li><p>FP32 ONNX models</p></li>
+<li><p>INT8 ONNX models</p>
+<p>out = gati.sim(“model_fp32.onnx”, {name: inp})</p>
+</li>
+</ul>
+<p>Use this for debugging, comparison, and output verification.</p>
+</section>
+<section id="example-classification-usage">
+<h2>Example: Classification Usage<a class="headerlink" href="#example-classification-usage" title="Link to this heading">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import numpy as np
+import gati
+
+def post(arr):
+    logits = np.stack([x[1] for x in arr])
+    return np.argmax(logits, axis=-1)
+
+name = gati.get_model_inputs(&quot;mnist.onnx&quot;)[0]
+gati.set_arch(ramsize=512, sa_arch=&quot;9,4,4&quot;, vasize=32, accbuf_size=4096, fcbuf_size=32768)
+gati.compile(&quot;mnist_int8.onnx&quot;, &quot;mnist.gml&quot;)
+gati.flash(&quot;gati_944.hex&quot;)
+gati.load(&quot;mnist_int8.onnx&quot;, &quot;mnist.gml&quot;)
+
+inp = np.load(&quot;sample.npy&quot;)
+pred = post(gati.run({name: inp}))
+
+print(&quot;Prediction:&quot;, pred)
+</pre></div>
+</div>
+</section>
+<section id="example-object-detection-usage-simplified">
+<h2>Example: Object Detection Usage (Simplified)<a class="headerlink" href="#example-object-detection-usage-simplified" title="Link to this heading">¶</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>img = preprocess(&quot;dog.jpg&quot;)
+name = gati.get_model_inputs(&quot;ssd.onnx&quot;)[0]
+
+outputs = gati.run({name: img})
+
+# User-written decode + NMS here
+boxes, labels, scores = decode(outputs)
+</pre></div>
+</div>
+<p>(Full examples are included in the <code class="docutils literal notranslate"><span class="pre">examples/</span></code> folder.)</p>
+</section>
+<section id="important-notes">
+<h2>Important Notes<a class="headerlink" href="#important-notes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>GATICC does <strong>not</strong> do preprocessing or postprocessing.<br />
+Users must handle image normalization, resizing, decoding, NMS, etc.</p></li>
+<li><p>FPGA supports <strong>only INT8</strong> operators currently:</p>
+<ul>
+<li><p>QLinearConv (normal / pointwise / depthwise)</p></li>
+<li><p>Relu, Clip</p></li>
+<li><p>QGemm</p></li>
+<li><p>Flatten</p></li>
+<li><p>QLinearAdd/Sub/Mul</p></li>
+<li><p>MaxPool, AveragePool</p></li>
+<li><p>QLinearSigmoid</p></li>
+<li><p>QLinearConcat</p></li>
+<li><p>QLinearLeakyRelu</p></li>
+<li><p>Tanh</p></li>
+<li><p>Split</p></li>
+</ul>
+</li>
+<li><p>Simulation supports <strong>FP32 and INT8</strong>.</p></li>
+<li><p>Input/Output format depends entirely on the model architecture.</p></li>
+</ul>
+</section>
+<section id="example-files">
+<h2>Example Files<a class="headerlink" href="#example-files" title="Link to this heading">¶</a></h2>
+<p>The repository includes ready-to-run examples:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/classification_run.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/classification_sim.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/detection_sim.py</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">examples/detection_run.py</span></code></p></li>
+</ul>
+<p>Users can copy these templates and plug in their own preprocessing and postprocessing code.</p>
+<blockquote>
+<div><p>[!NOTE]</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Make</span> <span class="n">sure</span> <span class="n">to</span> <span class="n">update</span> <span class="n">the</span> <span class="n">required</span> <span class="n">paths</span> <span class="ow">in</span> <span class="n">example</span> <span class="n">files</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="more-usage-full-command-reference">
+<h2>More Usage &amp; Full Command Reference<a class="headerlink" href="#more-usage-full-command-reference" title="Link to this heading">¶</a></h2>
+<p>This guide covers the common workflow for compiling and running models.<br />
+However, <strong>GATICC provides many more runtime options, flags, and utilities</strong><br />
+that users may need.</p>
+<p>To view the full function reference, run:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>gaticc --help
+</pre></div>
+</div>
+<p>This will show detailed documentation for:</p>
+<ul class="simple">
+<li><p>all available compiler flags</p></li>
+<li><p>runtime options</p></li>
+<li><p>model inspection commands</p></li>
+<li><p>summary/info mode</p></li>
+<li><p>architecture selection</p></li>
+<li><p>dispatch options</p></li>
+<li><p>debug/verbose options</p></li>
+<li><p>explanations for each function</p></li>
+</ul>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Gati Platform</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../gati/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html">Gati Hardware Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#hardware-configuration-generation">Hardware Configuration Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#fpga-bitstream-generation">FPGA Bitstream Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#generated-outputs">Generated Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#tool-requirements">Tool Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#supported-platforms">Supported Platforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#complete-build-flow">Complete Build Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gati/gati.html">Gati - The Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gati/references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="install.html" title="previous chapter">Gaticc - A Compiler/Simulator/Runtime for Gati CNN accelerator</a></li>
+      <li>Next: <a href="../hardware_overview.html" title="next chapter">Gati Hardware Guide</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Vicharak Computers PVT LTD.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/gaticc/usage.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

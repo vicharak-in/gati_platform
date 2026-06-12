@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Gati &amp; Gaticc &#8212; Gati Platform  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Gaticc - A Compiler/Simulator/Runtime for Gati CNN accelerator" href="install.html" />
+    <link rel="prev" title="Overview" href="../gati/overview.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="gati-gaticc">
+<h1>Gati &amp; Gaticc<a class="headerlink" href="#gati-gaticc" title="Link to this heading">¶</a></h1>
+<section id="what-is-gati">
+<h2>What is GATI?<a class="headerlink" href="#what-is-gati" title="Link to this heading">¶</a></h2>
+<p><strong>GATI</strong> is a hardware accelerator designed specifically for running <strong>Convolutional Neural Networks (CNNs)</strong>.
+It runs on top of a Vaaman FPGA (Field-Programmable Gate Array), which allows it to perform
+deep-learning computations much faster and more efficiently than a normal CPU.</p>
+<p>Here are the key things to know:</p>
+<ul class="simple">
+<li><p>GATI supports <strong>three type of architectures</strong><br />
+(<code class="docutils literal notranslate"><span class="pre">9,4,4</span></code>), (<code class="docutils literal notranslate"><span class="pre">9,8,8</span></code>), and (<code class="docutils literal notranslate"><span class="pre">16,1,16</span></code>).<br />
+These represent different FPGA compute configurations, each optimized for different kinds of CNN workloads.</p></li>
+<li><p>It can already run around <strong>20–22 machine-learning models</strong>, including:</p>
+<ul>
+<li><p>standard models like <strong>VGG</strong>, <strong>MobileNet</strong>, <strong>MobileNetv2SSD-Lite</strong> etc.</p></li>
+<li><p>custom models can be designed by users (with Gati supported operators).</p></li>
+</ul>
+</li>
+<li><p>It delivers <strong>high performance</strong> and <strong>low-latency</strong> inference on the Vaaman SBC.</p></li>
+</ul>
+<p>In simple words:<br />
+<strong>GATI is the hardware engine that accelerates your CNN models.</strong></p>
+</section>
+<section id="what-is-gaticc">
+<h2>What is GATICC?<a class="headerlink" href="#what-is-gaticc" title="Link to this heading">¶</a></h2>
+<p><strong>GATICC</strong> is the software toolchain that works with GATI.<br />
+You can think of it as the “brain” that prepares and manages your CNN models
+so they can run efficiently on the FPGA.</p>
+<p>GATICC includes three main parts:</p>
+<ol class="arabic simple">
+<li><p><strong>Compiler</strong><br />
+Converts your ONNX model into GATI’s special format (called <strong>.gml</strong>).<br />
+This prepares the model to run on the FPGA.</p></li>
+<li><p><strong>Runtime</strong><br />
+Loads the model on the target device (Vaaman SBC)<br />
+and executes inference using the selected FPGA bitstream.</p></li>
+<li><p><strong>Simulation</strong>
+Allows you to test and run inference of your models on a regular CPU<br />
+without needing the FPGA hardware.</p></li>
+<li><p><strong>Python API</strong><br />
+A user-friendly way to interact with GATICC from Python code.<br />
+It lets you:</p>
+<ul class="simple">
+<li><p>compile models,</p></li>
+<li><p>flash FPGA bitstreams,</p></li>
+<li><p>run inference,</p></li>
+<li><p>perform CPU-based simulation,</p></li>
+<li><p>check model structure (summary),</p></li>
+<li><p>and more.</p></li>
+</ul>
+</li>
+</ol>
+<p>In simple words:<br />
+<strong>GATICC is the software bridge between your ONNX model and the GATI hardware.</strong></p>
+</section>
+<section id="supported-operators-int8-fpga-execution">
+<h2>Supported Operators (INT8 FPGA Execution)<a class="headerlink" href="#supported-operators-int8-fpga-execution" title="Link to this heading">¶</a></h2>
+<p>GATI runs <strong>INT8 quantized ONNX models</strong>, and supports the following operators in hardware:</p>
+<ul class="simple">
+<li><p><strong>QLinearConv</strong><br />
+(standard convolution, pointwise convolution, depthwise convolution)</p></li>
+<li><p><strong>QGemm</strong></p></li>
+<li><p><strong>ReLU</strong> and <strong>Clip</strong><br />
+(including ReLU6)</p></li>
+<li><p><strong>Flatten</strong></p></li>
+<li><p><strong>QLinearAdd</strong></p></li>
+<li><p><strong>QLinearSub</strong></p></li>
+<li><p><strong>QLinearMul</strong></p></li>
+<li><p><strong>QLinearConcat</strong></p></li>
+<li><p><strong>QLinearSigmoid</strong></p></li>
+<li><p><strong>QLinearLeakyRelu</strong></p></li>
+<li><p><strong>Tanh</strong></p></li>
+<li><p><strong>Split</strong><br />
+(Channel Wise)</p></li>
+<li><p><strong>Pooling layers</strong><br />
+(MaxPool / AveragePool depending on model)</p></li>
+</ul>
+<p>These operators are fully accelerated on the FPGA and form the core execution path for CNN inference.</p>
+</section>
+<section id="fp32-model-support-simulation-only">
+<h2>FP32 Model Support (Simulation Only)<a class="headerlink" href="#fp32-model-support-simulation-only" title="Link to this heading">¶</a></h2>
+<p>While the FPGA path requires <strong>INT8 quantized models</strong>,<br />
+GATICC also supports <strong>FP32 ONNX models</strong>, but <strong>only for simulation</strong>.</p>
+<p>This means:</p>
+<ul class="simple">
+<li><p>You can test any FP32 model using the CPU-based simulator.</p></li>
+<li><p>Only quantized INT8 models are eligible for FPGA execution at this time.</p></li>
+</ul>
+<p>In simple words:<br />
+<strong>GATI accelerates INT8 CNN models on FPGA, but you can still develop and test FP32 models through simulation.</strong></p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Gati Platform</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../gati/overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html">Gati Hardware Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#hardware-configuration-generation">Hardware Configuration Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#fpga-bitstream-generation">FPGA Bitstream Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#generated-outputs">Generated Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#tool-requirements">Tool Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#supported-platforms">Supported Platforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#complete-build-flow">Complete Build Flow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gati/gati.html">Gati - The Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gati/references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../gati/overview.html" title="previous chapter">Overview</a></li>
+      <li>Next: <a href="install.html" title="next chapter">Gaticc - A Compiler/Simulator/Runtime for Gati CNN accelerator</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Vicharak Computers PVT LTD.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/gaticc/intro.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

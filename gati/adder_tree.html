@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Adder Tree &#8212; Gati Platform  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mega Pool" href="mega_pool.html" />
+    <link rel="prev" title="DRAM Controller" href="DRAM-controller.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="adder-tree">
+<span id="id1"></span><h1>Adder Tree<a class="headerlink" href="#adder-tree" title="Link to this heading">¶</a></h1>
+<p>This  mini Block implements an adder tree structure with N adder blocks to compute the sum of 20-bit inputs. The adder tree consists of multiple layers where each layer performs addition operations on inputs from the previous layer until a final output is obtained.</p>
+<a class="reference internal image-reference" href="_static/adder_tree.svg"><img alt="_static/adder_tree.svg" class="align-center" src="_static/adder_tree.svg" style="width: 100%;" />
+</a>
+<section id="functionality">
+<h2>Functionality<a class="headerlink" href="#functionality" title="Link to this heading">¶</a></h2>
+<p>The adder tree block receives inputs from N engines and produces a single 20-bit output. The inputs are fed into the adder blocks in a tree-like fashion:</p>
+<ol class="arabic simple">
+<li><p>The first layer consists of N/2 adder blocks, each receiving 2 inputs from respective engines and producing 1 output, each.</p></li>
+<li><p>The second layer has N/2 adder blocks, each receiving inputs from 2 adder blocks in the previous layer and producing 1 output, each.</p></li>
+<li><p>The third layer contains a N/2/2 adder block, which takes inputs from the 2 adder blocks in the second layer and produces the final output.</p></li>
+<li><p>In a similar fashion we will have 2logN layers of adder.</p></li>
+</ol>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Gati Platform</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gaticc/intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gaticc/install.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gaticc/usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html">Gati Hardware Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#directory-structure">Directory Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#hardware-configuration-generation">Hardware Configuration Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#fpga-bitstream-generation">FPGA Bitstream Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#generated-outputs">Generated Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#tool-requirements">Tool Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#supported-platforms">Supported Platforms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware_overview.html#complete-build-flow">Complete Build Flow</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="gati.html">Gati - The Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gaticc/faq.html">FAQ</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="gati.html">Gati</a><ul>
+      <li>Previous: <a href="DRAM-controller.html" title="previous chapter">DRAM Controller</a></li>
+      <li>Next: <a href="mega_pool.html" title="next chapter">Mega Pool</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2025, Vicharak Computers PVT LTD.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/gati/adder_tree.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
